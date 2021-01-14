@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous" />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Work Day Scheduler</title>
+</head>
+
+<body>
+  <header class="jumbotron">
+    <h1 class="display-3">Work Day Scheduler</h1>
+    <p class="lead">A simple calendar app for scheduling your work day</p>
+    <p id="currentDay" class="lead"> </p>
+  </header>
+  <div class="container">
+
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+  <script>
+    var diaryPlanner = {
+      1: "",
+      2: "",
+      3: "",
+      4: "",
+      5: "",
+      6: "",
+      7: "",
+      8: "",
+      9: "",
+      10: "",
+      11: "",
+      12: "",
+      13: "",
+      14: "",
+      15: "",
+      16: "",
+      17: "",
+      18: "",
+      19: "",
+      20: "",
+      21: "",
+      22: "",
+      23: "",
+      24: "",
+    }
+    var today = moment();
+    var date = today.format("DD");
+    var currentTime = (today.format("HH"))
+    var dow = (today.weekday());
+    var currentDayP = $("#currentDay")
+    var containerWrapper = $(".container")
+    var storageHandler = window.localStorage;
+
+    switch (dow) {
+      case 1:
+        currentDayP.text("Monday " + ordinal_suffix_of(date))
+        console.log("monday");
+        break;
+      case 2:
+        currentDayP.text("Tuesday " + ordinal_suffix_of(date))
+        console.log("Tuesday");
+        break;
+      case 3:
+        currentDayP.text("Wednesday " + ordinal_suffix_of(date))
+        console.log("Wednesday");
+        break;
+      case 4:
+        currentDayP.text("Thursday " + ordinal_suffix_of(date))
+        console.log("Thursday")
+        break;
+      case 5:
+        currentDayP.text("Friday " + ordinal_suffix_of(date))
+        console.log("Friday")
+        break;
+      case 6:
+        currentDayP.text("Saturday " + ordinal_suffix_of(date))
+        console.log("Saturday")
+        break;
+      case 7:
+        currentDayP.text("Sunday " + ordinal_suffix_of(date))
+        console.log("Sunday")
+        break;
+
+    }
+
+    function ordinal_suffix_of(i) {
+      var j = i % 10,
+        k = i % 100;
+      if (j == 1 && k != 11) {
+        return i + "st";
+      }
+      if (j == 2 && k != 12) {
+        return i + "nd";
+      }
+      if (j == 3 && k != 13) {
+        return i + "rd";
+      }
+      return i + "th";
+    }
+
+    var diaryPhrased = JSON.parse(window.localStorage.getItem('user'))
+    if (JSON.parse(window.localStorage.getItem('user') == undefined)) {
+      window.localStorage.setItem('user', JSON.stringify(diaryPlanner));
+    } else {
+      diaryPlanner = diaryPhrased;
+    }
+
+    function generateRows(time, classCurrent, descriptionOne, ) {
+      var description = descriptionOne.trim()
+      if (description === undefined) {
+        description = ""
+      }
+      if (classCurrent === undefined) {
+        classCurrent = ""
+      }
+      var createRowDiv = `
+              <div class="row">
+                  <div class="hour col-2">${time}</div>
+                  <textarea class="description col-7 ${classCurrent}" id="t-${time}" data-hour="${time}"
+                    style="color: black;">
+                    ${description.trim()}</textarea>
+                  <div class="saveBtn col-2 d-flex align-items-center justify-content-center" data-hour="${time}"><i
+                      class="far fa-save"
+                  aria-hidden="true"></i></div>
+              </div> `
+      return createRowDiv;
+    }
+
+    function saveDiary() {
+      var saveData = $(this).attr("data-hour");
+      var textData = $(`#t-${saveData}`)
+      diaryPlanner[saveData] = textData.val().trim()
+      window.localStorage.setItem('user', JSON.stringify(diaryPlanner));
+      console.log(diaryPlanner);
+    }
+    //set Back to 25
+
+    for (let x = 1; x < 25; x++) {
+      if (x < currentTime) {
+        containerWrapper.append(generateRows(x, "past", diaryPhrased[x]))
+      }
+      if (x == currentTime) {
+        containerWrapper.append(generateRows(x, "present", diaryPhrased[x]))
+      }
+      if (x > currentTime) {
+        containerWrapper.append(generateRows(x, "future", diaryPhrased[x]))
+      }
+    }
+    $(document).on("click", ".saveBtn", saveDiary);
+  </script>
+</body>
+
+</html>
