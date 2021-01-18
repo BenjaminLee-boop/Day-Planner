@@ -106,19 +106,26 @@
       return i + "th";
     }
 
-    var diaryPhrased = JSON.parse(window.localStorage.getItem('user'))
-    if (JSON.parse(window.localStorage.getItem('user') == undefined)) {
-      window.localStorage.setItem('user', JSON.stringify(diaryPlanner));
+    var diaryPhrased = {}
+    if (JSON.parse(window.localStorage.getItem('user'))) {
+      diaryPhrased = JSON.parse(window.localStorage.getItem('user'));
+      console.log(typeof (JSON.parse(window.localStorage.getItem('user'))));
+      console.log("HERE");
+      console.log(diaryPhrased);
     } else {
-      diaryPlanner = diaryPhrased;
+      diaryPhrased = diaryPlanner;
+      console.log(typeof (JSON.parse(window.localStorage.getItem('user'))));
+      console.log("here");
+      console.log(diaryPhrased);
+
     }
 
     function generateRows(time, classCurrent, descriptionOne, ) {
       var description = descriptionOne.trim()
-      if (description === undefined) {
+      if (!description) {
         description = ""
       }
-      if (classCurrent === undefined) {
+      if (!classCurrent) {
         classCurrent = ""
       }
       var createRowDiv = `
